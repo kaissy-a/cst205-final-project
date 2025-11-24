@@ -139,6 +139,11 @@ def save_processed(img: Image.Image, base_name: str) -> str:
     return out_path
 
 # UI
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Playlist Creator — Person 4")
+        self.setMinimumSize(1000, 600)
 
 
 
