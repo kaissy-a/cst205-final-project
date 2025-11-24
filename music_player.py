@@ -185,8 +185,31 @@ class MainWindow(QMainWindow):
         form.addRow("Name", self.name_edit)
         form.addRow("Description", self.desc_edit)
 
+        save_meta_btn = QPushButton("Save Details")
+        save_meta_btn.clicked.connect(self._save_meta)
+
+        #CoverControls
+        cover_group = QGroupBox("Cover Image & Filters")
+        cover_layout = QVBoxLayout(cover_group)
+        self.cover_label = QLabel("No cover image selected")
+        self.cover_label.setFixedHeight(220)
+        self.cover_label.setAlignment(Qt.AlignCenter)
+        self.cover_label.setStyleSheet("border: 1px solid #ccc;")
+
+        btn_choose_cover = QPushButton("Choose Cover Image...")
+        btn_choose_cover.clicked.connect(self._choose_cover)
+
+        #FilterControls
+
         
         
+        
+        
+        
+
+        
+        
+
 
 
 
