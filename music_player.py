@@ -200,6 +200,18 @@ class MainWindow(QMainWindow):
         btn_choose_cover.clicked.connect(self._choose_cover)
 
         #FilterControls
+        filter_row = QHBoxLayout()
+        self.filter_selector = QComboBox()
+        self.filter_selector.addItems(["None", "Negative", "Chroma Key"])
+
+        self.threshold_spin = QSpinBox()
+        self.threshold_spin.setRange(0, 255)
+        self.threshold_spin.setValue(40)
+        self.threshold_spin.setPrefix("Threshold: ")
+
+        btn_pick_color = QPushButton("Pick Chroma Color…")
+        btn_pick_color.clicked.connect(self._pick_chroma_color)
+        
 
         
         
@@ -209,6 +221,7 @@ class MainWindow(QMainWindow):
 
         
         
+
 
 
 
