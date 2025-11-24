@@ -38,3 +38,25 @@ from PySide6.QtWidgets import (
     QGroupBox,
 )
 
+DATA_FILE = "playlists.json"
+OUTPUT_DIR = "processed_covers"
+SUPPORTED_EXTS = {".png", ".jpg", ".jpeg"}
+
+#datamodels
+@dataclass
+class Track:
+    title: str
+    artist: str
+    preview_url: str = ""
+
+@dataclass
+class Playlist:
+    name: str
+    description: str = ""
+    cover_image_path: str = ""
+    processed_image_path: str = ""
+    tracks: List[Track] = field(default_factory=list)
+
+@dataclass
+
+
