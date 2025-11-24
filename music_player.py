@@ -80,9 +80,15 @@ def from_dict(d: Dict) -> "AppState":
 
 #Persistencehelpers
 
+def load_state() -> AppState:
+    if not os.path.exists(DATA_FILE):
+        return AppState()
+    with open(DATA_FILE, "r", encoding="utf-8) as f:
+
 
         
     
+
 
 
 
