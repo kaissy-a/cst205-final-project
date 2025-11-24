@@ -145,6 +145,26 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Playlist Creator — Person 4")
         self.setMinimumSize(1000, 600)
 
+        self.state = load_state()
+        self.current_index: Optional[int] = None
+        self.current_chroma_color: Tuple[int, int, int] = (0, 255, 0)
+
+        self._build_ui()
+        self._populate_list()
+
+    #UIConstruction
+    def _build_ui(self):
+        splitter = QSplitter()
+
+        #Left
+        left_panel = QWidget()
+        left_layout = QVBoxLayout(left_panel)
+
+        self.playlist_list = QListWidget()
+        self.playlist_list.currentRowChanged.connect(self._on_select_playlist)
+        
+
+
 
 
 
