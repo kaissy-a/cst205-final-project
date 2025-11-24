@@ -108,8 +108,14 @@ def negative_filter(img: Image.Image) -> Image.Image:
 
 def chroma_key_filter(img: Image.Image, key_rgb: Tuple[int, int, int], threshold: int = 40) -> Image.Image:
 
-        
+
+"""
+Makes pixels similar to key_rgb transparent.
+threshold: 0-255 — higher removes a broader range.
+"""
+
     
+
 
 
 
