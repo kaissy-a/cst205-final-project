@@ -113,8 +113,18 @@ def chroma_key_filter(img: Image.Image, key_rgb: Tuple[int, int, int], threshold
 Makes pixels similar to key_rgb transparent.
 threshold: 0-255 — higher removes a broader range.
 """
+img = img.convert("RGBA")
+r, g, b, a = img.split()
+src = img.load()
+w, h = img.size
+key_r, key_g, key_b = key_rgb
+out = Image.new("RGBA", (w, h))
+dst = out.load()
 
+for y in range(h):
+    for x in range(w):
     
+
 
 
 
