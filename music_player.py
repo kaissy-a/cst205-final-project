@@ -211,7 +211,20 @@ class MainWindow(QMainWindow):
 
         btn_pick_color = QPushButton("Pick Chroma Color…")
         btn_pick_color.clicked.connect(self._pick_chroma_color)
+
+        btn_apply_filter = QPushButton("Apply Filter")
+        btn_apply_filter.clicked.connect(self._apply_filter)
+
+        filter_row.addWidget(self.filter_selector)
+        filter_row.addWidget(self.threshold_spin)
+        filter_row.addWidget(btn_pick_color)
+        filter_row.addWidget(btn_apply_filter)
         
+        cover_layout.addWidget(self.cover_label)
+        cover_layout.addWidget(btn_choose_cover)
+        cover_layout.addLayout(filter_row)
+
+        #Tracks box
 
         
         
@@ -221,6 +234,7 @@ class MainWindow(QMainWindow):
 
         
         
+
 
 
 
