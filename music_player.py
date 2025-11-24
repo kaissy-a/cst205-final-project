@@ -123,7 +123,24 @@ dst = out.load()
 
 for y in range(h):
     for x in range(w):
-    
+        pr, pg, pb, pa = src[x, y]
+        dist = abs(pr - key_r) + abs(pg - key_g) + abs(pb - key_b)
+        if dist <= threshold:
+            # Make transparent
+            dst[x, y] = (pr, pg, pb, 0)
+        else:
+            dst[x, y] = (pr, pg, pb, pa)
+    return out
+        
+def save_processed(img: Image.Image, base_name: str) -> str:
+    ensure_output_dir()
+    out_path = os.path.join(OUTPUT_DIR, f"{base_name}.png")
+    img.save(out_path, "PNG")
+    return out_path
+
+# UI
+
+
 
 
 
