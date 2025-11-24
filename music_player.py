@@ -66,8 +66,24 @@ class AppState:
 
 @staticmethod
 def from_dict(d: Dict) -> "AppState":
+    pls: List[Playlist] = []
+    for p in d.get("playlists", []):
+        tracks = [Track(**t) for t in p.get("tracks", [])]
+        pls.append(Playlist(
+            name=p.get("name, "Untitled"),
+            description=p.get("description", ""),
+            cover_image_path=p.get("cover_image_path", ""),
+            processed_image_path=p.get("processed_image_path", ""),
+            tracks=tracks,
+        ))
+    return AppState(playlists=pls)
+
+#Persistencehelpers
+
+
+        
     
-    
+
 
 
 
