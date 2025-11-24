@@ -58,5 +58,16 @@ class Playlist:
     tracks: List[Track] = field(default_factory=list)
 
 @dataclass
+class AppState:
+    playlists: List[Playlist] = field(default_factory=list)
+
+    def to_dict(self) -> Dict:
+        return {"playlists": [asdict(p) for p in self.playlists]}
+
+@staticmethod
+def from_dict(d: Dict) -> "AppState":
+    
+    
+
 
 
