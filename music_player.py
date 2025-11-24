@@ -96,12 +96,21 @@ def save_state(state: AppState) -> None:
 def ensure_output_dir():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+
 def negative_filter(img: Image.Image) -> Image.Image:
+        if img.mode in ("RGBA", "LA"):
+            rgb = img.convert("RGB")
+            inv = ImageOps.invert(rgb).convert("RGBA")
+            inv.putalpha(img.split()[-1])
+            return inv
+        return ImageOps.invert(img.convert("RGB"))
+        
 
-
+def chroma_key_filter(img: Image.Image, key_rgb: Tuple[int, int, int], threshold: int = 40) -> Image.Image:
 
         
     
+
 
 
 
