@@ -162,7 +162,32 @@ class MainWindow(QMainWindow):
 
         self.playlist_list = QListWidget()
         self.playlist_list.currentRowChanged.connect(self._on_select_playlist)
+
+        btn_new = QPushButton("New Playlist")
+        btn_new.clicked.connect(self._new_playlist)
+        btn_delete = QPushButton("Delete Playlist")
+        btn_delete.clicked.connect(self._delete_playlist)
+
+        left_layout.addWidget(self.playlist_list)
+        left_layout.addWidget(btn_new)
+        left_layout.addWidget(btn_delete)
+
+        #Right
+        right_panel = QWidget()
+        right_layout = QVBoxLayout(right_panel)
+
+        #MetaBox
+        meta_group = QGroupBox("Playlist Details")
+        form = QFormLayout(meta_group)
+        self.name_edit = QLineEdit()
+        self.desc_edit = QTextEdit()
+        self.desc_edit.setFixedHeight(80)
+        form.addRow("Name", self.name_edit)
+        form.addRow("Description", self.desc_edit)
+
         
+        
+
 
 
 
