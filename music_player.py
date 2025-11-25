@@ -259,6 +259,10 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(splitter)
 
         #Menu
+        save_action = QAction("Save All", self)
+        save_action.triggered.connect(self._save_all)
+        self.menuBar().addAction(save_action)
+
         
         
 
@@ -271,6 +275,7 @@ class MainWindow(QMainWindow):
 
         
         
+
 
 
 
