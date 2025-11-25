@@ -225,15 +225,53 @@ class MainWindow(QMainWindow):
         cover_layout.addLayout(filter_row)
 
         #Tracks box
+        tracks_group = QGroupBox("Tracks (local metada)")
+        tracks_layout = QVBoxLayout(tracks_group)
+        self.tracks_list = QListWidget()
+        track_form = QHBoxLayout()
+        self.track_title = QLineEdit(); self.track_title.setPlaceholderText("Title")
+        self.track_artist = QLineEdit(); self.track_artist.setPlaceholderText("Artist")
+        self.track_preview = QLineEdit(); self.track_preview.setPlaceholderText("Preview URL (from API)")
+        btn_add_track = QPushButton("Add Track")
+        btn_add_track.clicked.connect(self._add_track)
+        btn_remove_track = QPushButton("Remove Selected")
+        btn_remove_track.clicked.connect(self._remove_track)
+
+        track_form.addWidget(self.track_title)
+        track_form.addWidget(self.track_artist)
+        track_form.addWidget(self.track_preview)
+        track_form.addWidget(btn_add_track)
+        track_form.addWidget(btn_remove_track)
+
+        tracks_layout.addWidget(self.tracks_list)
+        tracks_layout.addLayout(track_form)
+        
+        
+        right_layout.addWidget(meta_group)
+        right_layout.addWidget(save_meta_btn)
+        right_layout.addWidget(cover_group)
+        right_layout.addWidget(tracks_group)
+        
+        
+        splitter.addWidget(left_panel)
+        splitter.addWidget(right_panel)
+        splitter.setStretchFactor(1, 2)
+        self.setCentralWidget(splitter)
+
+        #Menu
+        
+        
 
         
         
         
         
         
+        
 
         
         
+
 
 
 
