@@ -304,6 +304,9 @@ class MainWindow(QMainWindow):
                 scaled = pix.scaled(self.cover_label.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
                 self.cover_label.setPixmap(scaled)
 
+        #Slots
+        
+
         
         
 
@@ -316,6 +319,7 @@ class MainWindow(QMainWindow):
 
         
         
+
 
 
 
