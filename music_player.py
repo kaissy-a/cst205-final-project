@@ -263,6 +263,47 @@ class MainWindow(QMainWindow):
         save_action.triggered.connect(self._save_all)
         self.menuBar().addAction(save_action)
 
+        #StateHelpers
+        def _populate_list(self):
+            self.playlist_list.clear()
+            for p in self.state.playlists:
+                item = QListWidgetItem(p.name)
+                self.playlist_list.addItem(item)
+            if self.state.playlists:
+                self.playlist_list.setCurrentRow(0)
+
+        def _refresh_details(self):
+            idx = self.current_index
+            if idx is None or idx < 0 or idx >= len(self.state.playlists):
+                self.name_edit.setText("")
+                self.desc_edit.setPlainText("")
+                self.cover_label.setText("No cover image selected")
+                self.cover_label.setPixmap(None)
+                self.tracks_list.clear()
+                return
+            p = self.state.playlists[idx]
+            self.name_edit.setText(p.name)
+            self.desc_edit.setPlainText(p.description)
+            self._update_cover_label(p.processed_image_path or p.cover_image_path)
+            self._refresh_tracks(p)
+
+        def _refresh_tracks(self, p: Playlist):
+            self.tracks_list.clear()
+            for t in p.tracks:
+                self.tracks_list.addItem(f"{t.title} — {t.artist}")
+
+
+        def _update_cover_label(self, path: str):
+            if not path or not os.path.exists(path):
+                self.cover_label.setText("No cover image selected")
+                self.cover_label.setPixmap(None)
+                return
+            from PySide6.QtGui import QPixmap
+            pix = QPixmap(path)
+            if not pix.isNull():
+                scaled = pix.scaled(self.cover_label.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                self.cover_label.setPixmap(scaled)
+
         
         
 
@@ -275,6 +316,7 @@ class MainWindow(QMainWindow):
 
         
         
+
 
 
 
