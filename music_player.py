@@ -15,7 +15,7 @@ from typing import List, Dict, Optional, Tuple
 from PIL import Image, ImageOps
 
 from PySide6.QtCore import Qt, QSize
-from PySide.QtGui import QAction, AIcon, QColor
+from PySide.QtGui import QAction, QIcon, QColor
 from PySide6.QtWidgets import (
     QApplication,
     QWidget,
@@ -64,19 +64,19 @@ class AppState:
     def to_dict(self) -> Dict:
         return {"playlists": [asdict(p) for p in self.playlists]}
 
-@staticmethod
-def from_dict(d: Dict) -> "AppState":
-    pls: List[Playlist] = []
-    for p in d.get("playlists", []):
-        tracks = [Track(**t) for t in p.get("tracks", [])]
-        pls.append(Playlist(
-            name=p.get("name, "Untitled"),
-            description=p.get("description", ""),
-            cover_image_path=p.get("cover_image_path", ""),
-            processed_image_path=p.get("processed_image_path", ""),
-            tracks=tracks,
-        ))
-    return AppState(playlists=pls)
+    @staticmethod
+    def from_dict(d: Dict) -> "AppState":
+        pls: List[Playlist] = []
+        for p in d.get("playlists", []):
+            tracks = [Track(**t) for t in p.get("tracks", [])]
+            pls.append(Playlist(
+                name=p.get("name", "Untitled"),
+                description=p.get("description", ""),
+                cover_image_path=p.get("cover_image_path", ""),
+                processed_image_path=p.get("processed_image_path", ""),
+                tracks=tracks,
+            ))
+        return AppState(playlists=pls)
 
 #Persistencehelpers
 
@@ -440,6 +440,7 @@ class MainWindow(QMainWindow):
 
         
         
+
 
 
 
