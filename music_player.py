@@ -83,12 +83,12 @@ class AppState:
 def load_state() -> AppState:
     if not os.path.exists(DATA_FILE):
         return AppState()
-    with open(DATA_FILE, "r", encoding="utf-8) as f:
+    with open(DATA_FILE, "r", encoding='utf-8') as f:
         data = json.load(f)
     return AppState.from_dict(data)
 
 def save_state(state: AppState) -> None:
-    with open(DATA_FILE, "W", encoding="utf-8) as f:
+    with open(DATA_FILE, "W", encoding='utf-8') as f:
         json.dump(state.to_dict(), f, indent=2)
 
 #ImageFiltering(Pillow)
