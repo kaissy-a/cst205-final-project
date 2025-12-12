@@ -15,7 +15,7 @@ from typing import List, Dict, Optional, Tuple
 from PIL import Image, ImageOps
 
 from PySide6.QtCore import Qt, QSize
-from PySide.QtGui import QAction, QIcon, QColor
+from PySide6.QtGui import QAction, QIcon, QColor
 from PySide6.QtWidgets import (
     QApplication,
     QWidget,
