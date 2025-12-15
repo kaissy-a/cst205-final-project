@@ -15,7 +15,7 @@ from typing import List, Dict, Optional, Tuple
 from PIL import Image, ImageOps
 
 from PySide6.QtCore import Qt, QSize
-from PySide.QtGui import QAction, QIcon, QColor
+from PySide6.QtGui import QAction, QIcon, QColor
 from PySide6.QtWidgets import (
     QApplication,
     QWidget,
@@ -35,7 +35,7 @@ from PySide6.QtWidgets import (
     QComboBox,
     QTextEdit,
     QSplitter,
-    QGroupBox,
+    QGroupBox
 )
 
 DATA_FILE = "playlists.json"
@@ -83,12 +83,12 @@ class AppState:
 def load_state() -> AppState:
     if not os.path.exists(DATA_FILE):
         return AppState()
-    with open(DATA_FILE, "r", encoding="utf-8) as f:
+    with open(DATA_FILE, "r", encoding="utf-8") as f:
         data = json.load(f)
     return AppState.from_dict(data)
 
 def save_state(state: AppState) -> None:
-    with open(DATA_FILE, "W", encoding="utf-8) as f:
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(state.to_dict(), f, indent=2)
 
 #ImageFiltering(Pillow)
@@ -109,27 +109,27 @@ def negative_filter(img: Image.Image) -> Image.Image:
 def chroma_key_filter(img: Image.Image, key_rgb: Tuple[int, int, int], threshold: int = 40) -> Image.Image:
 
 
-"""
-Makes pixels similar to key_rgb transparent.
-threshold: 0-255 — higher removes a broader range.
-"""
-img = img.convert("RGBA")
-r, g, b, a = img.split()
-src = img.load()
-w, h = img.size
-key_r, key_g, key_b = key_rgb
-out = Image.new("RGBA", (w, h))
-dst = out.load()
+    """
+    Makes pixels similar to key_rgb transparent.
+    threshold: 0-255 — higher removes a broader range.
+    """
+    img = img.convert("RGBA")
+    r, g, b, a = img.split()
+    src = img.load()
+    w, h = img.size
+    key_r, key_g, key_b = key_rgb
+    out = Image.new("RGBA", (w, h))
+    dst = out.load()
 
-for y in range(h):
-    for x in range(w):
-        pr, pg, pb, pa = src[x, y]
-        dist = abs(pr - key_r) + abs(pg - key_g) + abs(pb - key_b)
-        if dist <= threshold:
+    for y in range(h):
+        for x in range(w):
+            pr, pg, pb, pa = src[x, y]
+            dist = abs(pr - key_r) + abs(pg - key_g) + abs(pb - key_b)
+            if dist <= threshold:
             # Make transparent
-            dst[x, y] = (pr, pg, pb, 0)
-        else:
-            dst[x, y] = (pr, pg, pb, pa)
+                dst[x, y] = (pr, pg, pb, 0)
+            else:
+                dst[x, y] = (pr, pg, pb, pa)
     return out
         
 def save_processed(img: Image.Image, base_name: str) -> str:
@@ -225,7 +225,7 @@ class MainWindow(QMainWindow):
         cover_layout.addLayout(filter_row)
 
         #Tracks box
-        tracks_group = QGroupBox("Tracks (local metada)")
+        tracks_group = QGroupBox("Tracks (local metadata)")
         tracks_layout = QVBoxLayout(tracks_group)
         self.tracks_list = QListWidget()
         track_form = QHBoxLayout()
@@ -264,7 +264,7 @@ class MainWindow(QMainWindow):
         self.menuBar().addAction(save_action)
 
         #StateHelpers
-        def _populate_list(self):
+    def _populate_list(self):
             self.playlist_list.clear()
             for p in self.state.playlists:
                 item = QListWidgetItem(p.name)
@@ -272,7 +272,7 @@ class MainWindow(QMainWindow):
             if self.state.playlists:
                 self.playlist_list.setCurrentRow(0)
 
-        def _refresh_details(self):
+    def _refresh_details(self):
             idx = self.current_index
             if idx is None or idx < 0 or idx >= len(self.state.playlists):
                 self.name_edit.setText("")
@@ -287,13 +287,13 @@ class MainWindow(QMainWindow):
             self._update_cover_label(p.processed_image_path or p.cover_image_path)
             self._refresh_tracks(p)
 
-        def _refresh_tracks(self, p: Playlist):
+    def _refresh_tracks(self, p: Playlist):
             self.tracks_list.clear()
             for t in p.tracks:
                 self.tracks_list.addItem(f"{t.title} — {t.artist}")
 
 
-        def _update_cover_label(self, path: str):
+    def _update_cover_label(self, path: str):
             if not path or not os.path.exists(path):
                 self.cover_label.setText("No cover image selected")
                 self.cover_label.setPixmap(None)
@@ -305,12 +305,12 @@ class MainWindow(QMainWindow):
                 self.cover_label.setPixmap(scaled)
 
         #Slots
-        def _on_select_playlist(self, row: int):
+    def _on_select_playlist(self, row: int):
             self.current_index = row if row >= 0 else None
             self._refresh_details()
 
         
-        def _new_playlist(self):
+    def _new_playlist(self):
             name, ok = QFileDialog.getSaveFileName(self, "New Playlist Name (creates .plst stub)", "Untitled", "Playlist Stub (*.plst)")
             if not ok or not name:
                 return
@@ -320,7 +320,7 @@ class MainWindow(QMainWindow):
             self._populate_list()
             self.playlist_list.setCurrentRow(len(self.state.playlists) - 1)
 
-        def _delete_playlist(self):
+    def _delete_playlist(self):
             idx = self.current_index
             if idx is None:
                 return
@@ -330,7 +330,7 @@ class MainWindow(QMainWindow):
                 save_state(self.state)
                 self._populate_list()
                         
-        def _save_meta(self):
+    def _save_meta(self):
             idx = self.current_index
             if idx is None:
                 return
@@ -341,7 +341,7 @@ class MainWindow(QMainWindow):
             self._populate_list()
             self.playlist_list.setCurrentRow(idx)
 
-        def _choose_cover(self):
+    def _choose_cover(self):
             idx = self.current_index
             if idx is None:
                 return
@@ -349,20 +349,20 @@ class MainWindow(QMainWindow):
             if not path:
                 return
             if os.path.splitext(path)[1].lower() not in SUPPORTED_EXTS:
-            QMessageBox.warning(self, "Unsupported", "Please choose a PNG/JPG image.")
-            return
+                QMessageBox.warning(self, "Unsupported", "Please choose a PNG/JPG image.")
+                return
             p = self.state.playlists[idx]
             p.cover_image_path = path
             p.processed_image_path = "" # reset
             save_state(self.state)
             self._update_cover_label(p.cover_image_path)
 
-        def _pick_chroma_color(self):
+    def _pick_chroma_color(self):
             color = QColorDialog.getColor(QColor(*self.current_chroma_color), self, "Pick chroma color")
             if color.isValid():
                 self.current_chroma_color = (color.red(), color.green(), color.blue())
 
-        def _apply_filter(self):
+    def _apply_filter(self):
             idx = self.current_index
             if idx is None:
                 return
@@ -390,47 +390,47 @@ class MainWindow(QMainWindow):
             except Exception as e:
                 QMessageBox.critical(self, "Filter Error", f"Failed to apply filter: {e}")
 
-            def _add_track(self):
-                idx = self.current_index
-                if idx is None:
-                    return
-                title = self.track_title.text().strip()
-                artist = self.track_artist.text().strip()
-                preview = self.track_preview.text().strip()
-                if not title or not artist:
-                    QMessageBox.warning(self, "Missing fields", "Track title and artist are required.")
-                    return
-                p = self.state.playlists[idx]
-                p.tracks.append(Track(title=title, artist=artist, preview_url=preview))
-                save_state(self.state)
-                self._refresh_tracks(p)
-                self.track_title.clear(); self.track_artist.clear(); self.track_preview.clear()
+    def _add_track(self):
+        idx = self.current_index
+        if idx is None:
+            return
+        title = self.track_title.text().strip()
+        artist = self.track_artist.text().strip()
+        preview = self.track_preview.text().strip()
+        if not title or not artist:
+            QMessageBox.warning(self, "Missing fields", "Track title and artist are required.")
+            return
+        p = self.state.playlists[idx]
+        p.tracks.append(Track(title=title, artist=artist, preview_url=preview))
+        save_state(self.state)
+        self._refresh_tracks(p)
+        self.track_title.clear(); self.track_artist.clear(); self.track_preview.clear()
 
-            def _remove_track(self):
-                idx = self.current_index
-                if idx is None:
-                    return
-                p = self.state.playlists[idx]
-                row = self.tracks_list.currentRow()
-                if row < 0 or row >= len(p.tracks):
-                    return
-                p.tracks.pop(row)
-                save_state(self.state)
-                self._refresh_tracks(p)
+    def _remove_track(self):
+        idx = self.current_index
+        if idx is None:
+            return
+        p = self.state.playlists[idx]
+        row = self.tracks_list.currentRow()
+        if row < 0 or row >= len(p.tracks):
+            return
+        p.tracks.pop(row)
+        save_state(self.state)
+        self._refresh_tracks(p)
                 
                 
-            def _save_all(self):
-                save_state(self.state)
-                QMessageBox.information(self, "Saved", "All changes saved to playlists.json")
+    def _save_all(self):
+            save_state(self.state)
+            QMessageBox.information(self, "Saved", "All changes saved to playlists.json")
 
-        def main():
-            app = QApplication(sys.argv)
-            win = MainWindow()
-            win.show()
-            sys.exit(app.exec())
+def main():
+    app = QApplication(sys.argv)
+    win = MainWindow()
+    win.show()
+    sys.exit(app.exec())
 
-        if __name__ == "__main__":
-            main()
+if __name__ == "__main__":
+    main()
                 
         
         
