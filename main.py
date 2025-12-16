@@ -301,8 +301,11 @@ class Upload(QWidget):
 # all credits go to Andres, used his play and pause to set up preview player for apple music audio.
  # When user picks the song from dropdown menu
     def on_song_selected(self, index):
-        if index >= 0 and index < len(self.current_songs):
-            self.display_album_cover(index)
+        if index > 0: 
+            # We do this to convert from 1-based index to 0-based index
+            song_index = index - 1
+            if song_index >= 0 and song_index < len(self.current_songs):
+                self.display_album_cover(index)
 
     def display_album_cover(self, song_index):
         if 0 <= song_index < len(self.current_songs):
@@ -362,7 +365,6 @@ class Upload(QWidget):
         if songs: 
             self.results_list.clear()
             self.results_list.add_item("Select a song from search...")
-        if songs: 
             result_text = f"Found {len(songs)} songs:"
             for song in songs:
                 result_text = result_text + f"{song['artist']} - {song['title']}"
