@@ -36,10 +36,8 @@ def get_preview (artist, title):
     search = artist + " " + title
     songs = searched_songs(search)
 
-    if len(songs) > 0:
-        return songs[0]['preview_url']
-    else:
-        return ""
+    if len(songs) == 0:
+        return []
 
 """
 Excluding the searched song, this finds shows other songs from the same artist
@@ -57,7 +55,3 @@ def similar_songs(artist, title):
             result.append(song)
 
     return result
-
-
-    
-
