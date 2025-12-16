@@ -1,11 +1,15 @@
 import sys
 from PySide6.QtWidgets import (
-    QApplication, QWidget, QLabel, QPushButton,
-    QHBoxLayout, QVBoxLayout, QSlider, QFileDialog, QComboBox
+    QApplication, QWidget, QLabel, QPushButton, 
+    QHBoxLayout, QVBoxLayout, QSlider, QFileDialog, QComboBox, QLineEdit
 )
 from PySide6.QtCore import Slot, QUrl, Qt
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from __feature__ import snake_case, true_property
+from PIL import Image
+from visual_effects import createDynamicBackground
+import requests
+from apple_music_api import searched_songs
 
 
 app = QApplication([])
@@ -28,6 +32,29 @@ class MyWindow(QWidget):
 
         play.clicked.connect(self.open_ply)
         upload.clicked.connect(self.open_up)
+        manage_btn = QPushButton("Manage Playlists")
+        vbox.add_widget(manage_btn)
+        manage_btn.clicked.connect(self.open_playlist_manager)
+
+        self.visual_effects_btn = QPushButton("Visual Effects Demo")
+        vbox.add_widget(self.visual_effects_btn)
+        self.visual_effects_btn.clicked.connect(self.open_visual_effects_demo)
+
+    #opens visual effects demo
+    @Slot()
+    def open_visual_effects_demo(self):
+        # example uses image already in file folder
+        image = Image.open("album_cover.jpg")
+        createDynamicBackground(image, sample=600, size=(400,400), blur=100, debug=True)
+
+    
+    #opens playlist manager
+    @Slot()
+    def open_playlist_manager(self):
+        from music_player import MainWindow
+        self.playlist_manager = MainWindow()
+        self.playlist_manager.show()
+
 #opens playlist
     @Slot()
     def open_ply(self):
@@ -113,7 +140,7 @@ class Playlist(QWidget):
 #loads chosen song
     @Slot(int)
     def load_selected_song(self, index):
-        if index < 0 or index >= len(self.song_list):
+        if index >= 0 and index < len(self.song_list):
             self.set_media(self.song_list[index])
 
 #play and pause button
@@ -171,7 +198,25 @@ class Upload(QWidget):
         self.open_button = QPushButton("Choose Audio FIle")
         self.status_label = QLabel("No file selected")
 
+        # connecting API
+        self.search_button = QPushButton("Search Apple Music API")
+        self.search_input = QLineEdit()
+        self.search_input.setplaceholdertext = "Enter song..."
+
         layout = QVBoxLayout()
+        layout.add_widget(self.open_button)
+        layout.add_widget(self.status_label)
+        self.set_layout(layout)
+
+        layout.add_widget(QLabel("OR "))
+        layout.add_widget(self.search_input)
+        layout.add_widget(self.search_button)
+
+
+        self.open_button.clicked.connect(self.open_file)
+        self.search_button.clicked.connect(self.search_apple_music_api)
+
+       
         layout.add_widget(self.open_button)
         layout.add_widget(self.status_label)
         self.set_layout(layout)
@@ -187,6 +232,25 @@ class Upload(QWidget):
 
         self.status_label.text = f"Selected: {file_path.split('/')[-1]}"
         self.main_window.add_song(file_path)
+    @Slot()
+    def search_apple_music_api(self):
+        search_text = self.search_input.text
+        if len(search_text) == 0:
+                    self.status_label.text = "Type a song!"
+                    return
+
+
+        songs = searched_songs(search_text, limit=3)
+
+        if songs:
+            result_text = f"Found {len(songs)} songs:"
+            for song in songs:
+                result_text = result_text + f"{song['artist']} - {song['title']}"
+
+            self.status_label.text = result_text
+        else:
+            self.status_label.text = "Song not found."
+
 
 main = MyWindow()
 main.show()
