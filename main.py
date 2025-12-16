@@ -5,8 +5,10 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Slot, QUrl, Qt
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
+from PySide6.QtGui import QPixmap
 from __feature__ import snake_case, true_property
 from PIL import Image
+from PIL.ImageQt import ImageQt
 from visual_effects import createDynamicBackground
 import requests
 from apple_music_api import searched_songs
@@ -67,23 +69,31 @@ class MyWindow(QWidget):
         self.upload = Upload(self)
         self.upload.show()
     #sends the selcted song path to the playlsit
-    def add_song (self, file_path):
+    def add_song(self, file_path):
         if self.ply is None:
             self.ply = Playlist()
 
         self.ply.add_song(file_path)
         self.ply.show()
+    def add_image(self,image):
+        if self.ply is None:
+            self.ply = Playlist()
+        self.ply.add_image(image)
 #playlist window 
 class Playlist(QWidget):
     def __init__(self):
         super().__init__()
     #stores the files for songs
         self.song_list = []
+    #image list
+        self.image_list = []
 #dropdown menu for the songs or any audio files
         self.song_dropdown = QComboBox()
         self.song_dropdown.currentIndexChanged.connect(self.load_selected_song)
         #playbutton
         self.play_pause_button = QPushButton("Play")
+        self.image = QLabel()
+        self.image.alignment = Qt.AlignCenter
 
         #palybar
         self.position_slider = QSlider(Qt.Horizontal)
@@ -102,6 +112,7 @@ class Playlist(QWidget):
         slider_row.add_widget(self.position_label)
 
         layout = QVBoxLayout()
+        layout.add_widget(self.image)
         layout.add_layout(controls)
         layout.add_layout(slider_row)
         #audio output
@@ -133,6 +144,8 @@ class Playlist(QWidget):
         #auto loads the first song thats added
         if self.song_dropdown.count == 1:
             self.set_media(file_path)
+    def add_image(self, image):
+        self.image_list.append(image)
     #loads the song into the media player
     def set_media(self, file_path):
         self.player.source = QUrl.from_local_file(file_path)
@@ -142,6 +155,14 @@ class Playlist(QWidget):
     def load_selected_song(self, index):
         if index >= 0 and index < len(self.song_list):
             self.set_media(self.song_list[index])
+        
+        #since image and song have same index, load image as well
+        if index >= 0 and index < len(self.image_list):
+            oldImage = Image.open(self.image_list[index])
+            newImage = createDynamicBackground(oldImage, 1200, (400,400),120, False)
+            qtImage = ImageQt(newImage)
+            pixmap = QPixmap.from_image(qtImage)
+            self.image.pixmap = pixmap
 
 #play and pause button
     @Slot()
@@ -235,6 +256,7 @@ class Upload(QWidget):
             return
 
         self.image_status_label.text = f"Selected: {file_path.split('/')[-1]}"
+        self.main_window.add_image(file_path)
         
     @Slot()
     def search_apple_music_api(self):

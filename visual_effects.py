@@ -55,6 +55,7 @@ def createDynamicBackground(image, sample:int, size, blur:int, debug: bool):
     fullImage.paste(image, (100,100))
     if debug:
         fullImage.show()
+    return fullImage
 
 # you only need to use create dynamic background method, others are not needed
 # what does "create dynamic background" need?
