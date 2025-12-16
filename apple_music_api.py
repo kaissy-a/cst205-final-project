@@ -34,10 +34,13 @@ Finds the preview URL for the song searched for
 """
 def get_preview (artist, title):
     search = artist + " " + title
-    songs = searched_songs(search)
+    songs = searched_songs(search, limit=1)
 
-    if len(songs) == 0:
-        return []
+
+    if songs:
+        return songs[0]['preview_url']
+    return None
+    
 
 """
 Excluding the searched song, this finds shows other songs from the same artist
