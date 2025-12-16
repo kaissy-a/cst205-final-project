@@ -216,7 +216,7 @@ class Upload(QWidget):
         self.open_button.clicked.connect(self.open_file)
         self.search_button.clicked.connect(self.search_apple_music_api)
 
-        layout = QVBoxLayout()
+       
         layout.add_widget(self.open_button)
         layout.add_widget(self.status_label)
         self.set_layout(layout)
