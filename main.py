@@ -195,32 +195,26 @@ class Upload(QWidget):
         self.main_window = main_window
 
         #button to open files 
-        self.open_button = QPushButton("Choose Audio FIle")
-        self.status_label = QLabel("No file selected")
+        self.open_button = QPushButton("Choose Audio File")
+        self.image_open_button = QPushButton("Choose Image File")
+        self.status_label = QLabel("No audio file selected")
+        self.image_status_label = QLabel("No image file selected")
 
         # connecting API
         self.search_button = QPushButton("Search Apple Music API")
         self.search_input = QLineEdit()
         self.search_input.setplaceholdertext = "Enter song..."
-
         layout = QVBoxLayout()
+        self.open_button.clicked.connect(self.open_file)
+        self.search_button.clicked.connect(self.search_apple_music_api)
         layout.add_widget(self.open_button)
+        layout.add_widget(self.image_open_button)
         layout.add_widget(self.status_label)
-        self.set_layout(layout)
-
+        layout.add_widget(self.image_status_label)
         layout.add_widget(QLabel("OR "))
         layout.add_widget(self.search_input)
         layout.add_widget(self.search_button)
-
-
-        self.open_button.clicked.connect(self.open_file)
-        self.search_button.clicked.connect(self.search_apple_music_api)
-
-       
-        layout.add_widget(self.open_button)
-        layout.add_widget(self.status_label)
         self.set_layout(layout)
-
         self.open_button.clicked.connect(self.open_file)
 #open files and sends teh file to main window 
     @Slot()
@@ -232,6 +226,15 @@ class Upload(QWidget):
 
         self.status_label.text = f"Selected: {file_path.split('/')[-1]}"
         self.main_window.add_song(file_path)
+    @Slot()
+    def open_image_file(self):
+        file_path, _ = QFileDialog.get_open_file_name( self, "Open Image", "", "Image Files (*.png, *.jpg)")
+        
+        if not file_path:
+            return
+
+        self.image_status_label.text = f"Selected: {file_path.split('/')[-1]}"
+        
     @Slot()
     def search_apple_music_api(self):
         search_text = self.search_input.text
