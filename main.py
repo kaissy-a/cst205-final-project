@@ -252,6 +252,9 @@ class Upload(QWidget):
 
         self.preview_player = QMediaPlayer()
         self.preview_audio = QAudioOutput()
+        layout.add_widget(self.preview_button)
+
+
 
 #open files and sends teh file to main window 
     @Slot()
@@ -272,6 +275,14 @@ class Upload(QWidget):
 
         self.image_status_label.text = f"Selected: {file_path.split('/')[-1]}"
         self.main_window.add_image(file_path)
+
+    def preview(self, preview_url):
+        if preview_url:
+            self.preview_player.source = QUrl(preview_url)
+            self.preview_button.enabled = True
+            self.preview_button.text = "Play Preview"
+        else:
+            self.preview_button.enabled = False
     
     @Slot()
     def toggle_playback(self):
@@ -283,10 +294,10 @@ class Upload(QWidget):
 
         if playing:
             self.player.pause()
-            self.preview.text = "Play"
+            self.preview_button = "Play"
         else:
             self.player.play()
-            self.preview.button.text = "Pause"
+            self.preview_button = "Pause"
 # all credits go to Andres, used his play and pause to set up preview player for apple music audio.
  # When user picks the song from dropdown menu
     def on_song_selected(self, index):

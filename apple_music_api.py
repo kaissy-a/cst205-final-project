@@ -1,6 +1,7 @@
 """
 Person 2: Apple music API
-We access the Apple Music API and 
+We access the Apple Music API and grab the artists name, song, title and album cover. The API code used material from the lab 19,
+as well as the lectures slides titled API.
 """
 import requests
 
