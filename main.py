@@ -273,7 +273,7 @@ class Upload(QWidget):
         self.image_status_label.text = f"Selected: {file_path.split('/')[-1]}"
         self.main_window.add_image(file_path)
     
-     @Slot()
+    @Slot()
     def toggle_playback(self):
         """ Used to play/pause the preview audio"""
         try:
