@@ -141,8 +141,7 @@ class Playlist(QWidget):
     @Slot(int)
     def load_selected_song(self, index):
         if index >= 0 and index < len(self.song_list):
-            self.set_media(self.song_list[index])
-        
+            self.set_media(self.song_list[index])    
         #since image and song have same index, load image as well
         if index >= 0 and index < len(self.image_list):
             oldImage = Image.open(self.image_list[index])
@@ -201,6 +200,8 @@ class Upload(QWidget):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
+        self.current_songs = []
+        self.window_title = "Search Music"
 
         #button to open files 
         self.open_button = QPushButton("Choose Audio File")
@@ -209,22 +210,49 @@ class Upload(QWidget):
         self.image_status_label = QLabel("No image file selected")
 
         # connecting API
-        self.search_button = QPushButton("Search Apple Music API")
         self.search_input = QLineEdit()
-        self.search_input.setplaceholdertext = "Enter song..."
+        self.search_input.setplaceholdertext = "Enter song or artitst name..."
+        self.search_button = QPushButton("Search Apple Music API")
+
+        # album cover displayed
+        self.artwork_label = QLabel()
+        self.artwork_label.set_fixed_size(400,600)
+        self.artwork_label.text = "Album Artwork"
+
+        # drop down of song list
+        self.results_list = QComboBox()
+        self.results_list.add_item("Select a song from search results...")
+
+        # preview button to play song
+        self.preview_button = QPushButton("Play Preview")
+        self.preview_button.enabled = False
+
         layout = QVBoxLayout()
-        self.open_button.clicked.connect(self.open_file)
-        self.search_button.clicked.connect(self.search_apple_music_api)
         layout.add_widget(self.open_button)
-        layout.add_widget(self.image_open_button)
         layout.add_widget(self.status_label)
+
+        layout.add_widget(self.image_open_button)
         layout.add_widget(self.image_status_label)
-        layout.add_widget(QLabel("OR "))
+
+        self.set_layout(layout)
+        layout.add_widget(QLabel("-- OR --"))
         layout.add_widget(self.search_input)
         layout.add_widget(self.search_button)
-        self.set_layout(layout)
+
+        # album cover display and song list dropdown
+        layout.add_widget(self.artwork_label)
+        layout.add_widget(self.results_list)
+
+
         self.open_button.clicked.connect(self.open_file)
         self.image_open_button.clicked.connect(self.open_image_file)
+        self.search_button.clicked.connect(self.search_apple_music_api)
+        self.preview_button.clicked.connect(self.toggle_playback)
+        self.results_list.currentIndexChanged.connect(self.on_song_selected)
+
+        self.preview_player = QMediaPlayer()
+        self.preview_audio = QAudioOutput()
+
 #open files and sends teh file to main window 
     @Slot()
     def open_file(self):
@@ -244,7 +272,72 @@ class Upload(QWidget):
 
         self.image_status_label.text = f"Selected: {file_path.split('/')[-1]}"
         self.main_window.add_image(file_path)
-        
+    
+     @Slot()
+    def toggle_playback(self):
+        """ Used to play/pause the preview audio"""
+        try:
+            playing = self.preview_player.playback_state == QMediaPlayer.PlayingState
+        except Exception:
+            playing = False
+
+        if playing:
+            self.player.pause()
+            self.preview.text = "Play"
+        else:
+            self.player.play()
+            self.preview.button.text = "Pause"
+# all credits go to Andres, used his play and pause to set up preview player for apple music audio.
+ # When user picks the song from dropdown menu
+    def on_song_selected(self, index):
+        if index >= 0 and index < len(self.current_songs):
+            self.display_album_cover(index)
+
+    def display_album_cover(self, song_index):
+        if 0 <= song_index < len(self.current_songs):
+            song = self.current_songs[song_index]
+            
+            # Grab the URL of the artwork
+            picture_url = song['artwork_url']
+            
+            # Download
+            response = requests.get(picture_url)
+            
+            # Check if download worked
+            if response.status_code == 200:
+                pixmap = QPixmap()
+                loaded = pixmap.load_from_data(response.content)
+                
+                if loaded:
+                    # Make it 100x100 pixels
+                    pixmap = pixmap.scaled(100, 100)
+                    
+                    # Show it
+                    self.artwork_label.pixmap = pixmap
+                    
+                    # Set up preview player
+                    self.preview(song['preview_url'])
+                else:
+                    self.artwork_label.text = "Couldn't load image"
+            else:
+                self.artwork_label.text = "Couldn't download"
+    def add_selected_playlist(self):
+        index = self.results_list.current_index
+        if 0 <= index < len(self.current_songs):
+            song = self.current_songs[index]
+
+            if 'preview_url' in song and song['preview_url']:
+                self.main_window.add_song(song['preview_url'])
+                self.status_label.text = f"Added to playlist: {song['artist']} - {song['title']}"
+
+
+                    
+            # Set up the preview player
+            self.preview_player.source = QUrl.from_local_file(preview_url)
+            song = self.current_songs[index]
+            preview_url = song.get('preview_url')
+            if preview_url:
+                self.main_window.add_song(preview_url)
     @Slot()
     def search_apple_music_api(self):
         search_text = self.search_input.text
@@ -254,15 +347,19 @@ class Upload(QWidget):
 
 
         songs = searched_songs(search_text, limit=3)
-
-        if songs:
+        self.current_songs = songs
+        if songs: 
+            self.results_list.clear()
+            self.results_list.add_item("Select a song from search...")
+        if songs: 
             result_text = f"Found {len(songs)} songs:"
             for song in songs:
                 result_text = result_text + f"{song['artist']} - {song['title']}"
+                self.results_list.add_item(result_text)
 
-            self.status_label.text = result_text
+            self.status_label.text = f"found {len(songs)} songs. Select from dropdown."
         else:
-            self.status_label.text = "Song not found."
+            self.status_label.text = "Song(s) not found."
 
 
 main = MyWindow()
