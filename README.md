@@ -30,7 +30,7 @@ How to control
 3. Upload 
 - Select Choose Audio File to open files and selct an audio file 
 - Selcet Choose Image File to upload any image to make the thumbnail for selsected audio file
-- Search Apple Music Api to find song titles and artist names 
+- Search Apple Music Api to find song titles and artist names as well as see the album cover for songs with similar title
 
 4. Playlist Manager
 - Had plans to expan upon but never came around to them
