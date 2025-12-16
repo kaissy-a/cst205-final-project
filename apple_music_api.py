@@ -1,7 +1,13 @@
 """
+Apple Music API Integration Module
+Author: Kaissy Amaro
+Date: 12/15/2025
 Person 2: Apple music API
 We access the Apple Music API and grab the artists name, song, title and album cover. The API code used material from the lab 19,
 as well as the lectures slides titled API.
+- Fetches the preview URL for the song specificly asked for by artist and title.
+- Parameters: Artists name (str) and song title (str)
+- Returns a str or none if not found in the API
 """
 import requests
 
