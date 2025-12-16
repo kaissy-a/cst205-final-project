@@ -38,18 +38,6 @@ class MyWindow(QWidget):
         vbox.add_widget(manage_btn)
         manage_btn.clicked.connect(self.open_playlist_manager)
 
-        self.visual_effects_btn = QPushButton("Visual Effects Demo")
-        vbox.add_widget(self.visual_effects_btn)
-        self.visual_effects_btn.clicked.connect(self.open_visual_effects_demo)
-
-    #opens visual effects demo
-    @Slot()
-    def open_visual_effects_demo(self):
-        # example uses image already in file folder
-        image = Image.open("album_cover.jpg")
-        createDynamicBackground(image, sample=600, size=(400,400), blur=100, debug=True)
-
-    
     #opens playlist manager
     @Slot()
     def open_playlist_manager(self):
@@ -62,7 +50,6 @@ class MyWindow(QWidget):
     def open_ply(self):
         if self.ply is None:
             self.ply = Playlist()
-        self.ply.show()
 #opens upload window
     @Slot()
     def open_up(self):
