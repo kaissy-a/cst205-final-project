@@ -8,6 +8,7 @@ as well as the lectures slides titled API.
 - Fetches the preview URL for the song specificly asked for by artist and title.
 - Parameters: Artists name (str) and song title (str)
 - Returns a str or none if not found in the API
+- Return a list of other songs with that specific artist
 """
 import requests
 
