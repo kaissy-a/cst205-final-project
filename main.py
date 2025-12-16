@@ -216,6 +216,7 @@ class Upload(QWidget):
         layout.add_widget(self.search_button)
         self.set_layout(layout)
         self.open_button.clicked.connect(self.open_file)
+        self.image_open_button.clicked.connect(self.open_image_file)
 #open files and sends teh file to main window 
     @Slot()
     def open_file(self):
